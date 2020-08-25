@@ -13,21 +13,17 @@ public class Hangwords {
 
     private static byte[] allBytes; // why if I move it into "readFileContentToArray()" it doesn't work?
 
-    public static void main(String[] args) {
-
-        for (String x: readFileContentToArray()) {
-            System.out.print(x+" ");
-        }
-
-    }
+    private static String[] wordsArray = new String[0]; // Initialisierung ist nötig, um wordsArray.length aufrufen zu können. Wenn Anzahl der elemente ist zero, array wird überschrieben.
 
     // read the file "dict.txt" to an array of String with unique words, all in lowercase.
-    public static String[] readFileContentToArray(){
+    private static String[] readFileContentToArray(){
 
 //        -- Test. Working...
 //        Path currentDir = Paths.get("dict.txt");
 //        System.out.println(currentDir.toAbsolutePath());
 //        --
+
+
 
             Path inputFile     = Paths.get(".\\dict.txt");
 
@@ -52,30 +48,26 @@ public class Hangwords {
 
             String[] arrWords = createWordsArray(s);
 
-            // output the words
-//            for (String x: arrWords) {
-//                System.out.println(x);
-//            }
-        return arrWords;
+            return arrWords;
     }
 
     // initiates the static Array arrWords. only used in the readFileContentToArray() method.
-    public static String[] createWordsArray(String s){
+    private  static String[] createWordsArray(String s){
         ArrayList<String> temp_arr = new ArrayList<>();
-        System.out.println("\n\rUsable words:");
+
         //do a loop through the string "s" to get the words
         String currentWord="";
         for (int i = 0; i <= s.length()-1; i++) {
             char c=s.charAt(i);
 
-            if (c>=65&&c<=122){
+            if ((c>=65&&c<=90)||(c>=97&&c<=122)){  // nur Buchstaben A-Z und a-z werden berücksichtigt.
                 // we found a usable character. add it to the current word.
 
                 currentWord= currentWord.concat(Character.toString(c));
             } else {
                 //we found an unusable character, close the current word and reinit.
                 if (!currentWord.isEmpty()) { // to check if a word exist or not. if not, it could be a second unusable character ... ( avoid creating empty words)
-//                  System.out.print(currentWord + ",");
+
                     // checking if the word already exists, if not add it to "temp_arr"
                     if (!temp_arr.contains(currentWord.toLowerCase())) temp_arr.add(currentWord.toLowerCase());
                     currentWord = "";
@@ -87,5 +79,46 @@ public class Hangwords {
         array2Send = temp_arr.toArray(array2Send);
         return array2Send;
     }
-}
+
+    // gibt ein random wort zurück :
+    // verwendung:
+    //      getWord(char minCharacter, char maxCharacter) - gibt ein zufälliges wort zurück mit einen Anzahl an Buchstaben zwischen  minCharacter und  maxCharacter
+    //      getWord(char minCharacter) - gibt ein  zufälliges wort zurück mit einen minimalen  Anzahl an Buchstaben von minCharacter
+    //      getWord() - gibt ein  zufälliges wort zurück
+    //          solte kein Treffer vorhanden sein, wird ein empty String zurückgegeben.
+
+    private  static String getWord(int minCharNumber, int maxCharNumber){
+        // wenn  wordsArray noch keine Elemente hat, mnuss es erst initialisiet werden
+        if(wordsArray.length==0)   wordsArray=readFileContentToArray();
+        ArrayList<String> filterWordsArray= new ArrayList<String>();
+        for (String word: wordsArray){
+            if (word.length()>=minCharNumber && word.length()<=maxCharNumber) filterWordsArray.add(word);
+        }
+        int randomWordIndex = (int) Math.floor(Math.random() * filterWordsArray.size() );
+        return ((filterWordsArray.size() >= 1) ?  filterWordsArray.get(randomWordIndex) : "");
+
+    }
+    private  static String getWord(int minCharNumber){
+        return  getWord(minCharNumber,40);
+    }
+    private  static String getWord(){
+        return getWord(1,40);
+    }
+
+
+    //  ------------    MAIN    ----------------
+    public static void main(String[] args) {
+
+        System.out.println("\n\rUsable words:");
+
+        wordsArray =  readFileContentToArray();
+        for (String x: wordsArray) {
+            System.out.print(x+" ");
+        }
+        for (int i = 0; i<10;i++)
+        System.out.println("\r\nRandom word:"+getWord(7));
+    }
+
+
+} //end class Hangwords
 
