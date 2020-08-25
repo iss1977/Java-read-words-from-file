@@ -13,7 +13,7 @@ public class Hangwords {
 
     private static byte[] allBytes; // why if I move it into "readFileContentToArray()" it doesn't work?
 
-    private static String[] wordsArray = new String[0]; // Initialisierung ist nötig, um wordsArray.length aufrufen zu können. Wenn Anzahl der elemente ist zero, array wird überschrieben.
+    private static String[] wordsArray = new String[0]; // Initialisierung ist nötig, um wordsArray.add() aufrufen zu können. Wenn Anzahl der elemente ist zero, array wird überschrieben.
 
     // read the file "dict.txt" to an array of String with unique words, all in lowercase.
     private static String[] readFileContentToArray(){
@@ -88,14 +88,14 @@ public class Hangwords {
     //          solte kein Treffer vorhanden sein, wird ein empty String zurückgegeben.
 
     private  static String getWord(int minCharNumber, int maxCharNumber){
-        // wenn  wordsArray noch keine Elemente hat, mnuss es erst initialisiet werden
+        // wenn  wordsArray noch keine Elemente hat, muss es erst initialisiet werden
         if(wordsArray.length==0)   wordsArray=readFileContentToArray();
         ArrayList<String> filterWordsArray= new ArrayList<String>();
         for (String word: wordsArray){
             if (word.length()>=minCharNumber && word.length()<=maxCharNumber) filterWordsArray.add(word);
         }
         int randomWordIndex = (int) Math.floor(Math.random() * filterWordsArray.size() );
-        return ((filterWordsArray.size() >= 1) ?  filterWordsArray.get(randomWordIndex) : "");
+        return ((filterWordsArray.size() > 0) ?  filterWordsArray.get(randomWordIndex) : "");
 
     }
     private  static String getWord(int minCharNumber){
@@ -109,14 +109,15 @@ public class Hangwords {
     //  ------------    MAIN    ----------------
     public static void main(String[] args) {
 
-        System.out.println("\n\rUsable words:");
-
         wordsArray =  readFileContentToArray();
+        System.out.println("\n\rUsable words:");
         for (String x: wordsArray) {
             System.out.print(x+" ");
         }
-        for (int i = 0; i<10;i++)
-        System.out.println("\r\nRandom word:"+getWord(7));
+        System.out.println("\r\nTotal usable words:"+wordsArray.length);
+        System.out.print("\r\nRandom words:");
+        for (int i = 0; i<50;i++)
+            System.out.print(getWord(4,10)+" ");
     }
 
 
