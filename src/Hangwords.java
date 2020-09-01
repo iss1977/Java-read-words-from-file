@@ -11,33 +11,27 @@ import java.nio.charset.StandardCharsets;
 
 public class Hangwords {
 
-    private static byte[] allBytes; // why if I move it into "readFileContentToArray()" it doesn't work?
+    public Hangwords(){
+        Hangwords.wordsArray =  readFileContentToArray();
+    }
+
+    private static byte[] allBytes;
 
     private static String[] wordsArray = new String[0]; // Initialisierung ist nötig, um wordsArray.add() aufrufen zu können. Wenn Anzahl der elemente ist zero, array wird überschrieben.
 
     // read the file "dict.txt" to an array of String with unique words, all in lowercase.
     private static String[] readFileContentToArray(){
 
-//        -- Test. Working...
-//        Path currentDir = Paths.get("dict.txt");
-//        System.out.println(currentDir.toAbsolutePath());
-//        --
-
-
-
-            Path inputFile     = Paths.get(".\\dict.txt");
+            Path inputFile     = Paths.get("dict.txt");
 
             // display the dictionary file
             System.out.println("Reading dictionary :"+inputFile.toAbsolutePath().toString());
 
             try {
                 long start = System.currentTimeMillis();
-
-                allBytes = Files.readAllBytes(inputFile);
-
+                allBytes = Files.readAllBytes(inputFile); // read the file to memory
                 long end = System.currentTimeMillis();
                 System.out.println("File read in " + (end - start) + " ms");
-
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -47,7 +41,6 @@ public class Hangwords {
             System.out.println("\n\rContent of file : \n\r" + s);
 
             String[] arrWords = createWordsArray(s);
-
             return arrWords;
     }
 
@@ -87,7 +80,7 @@ public class Hangwords {
     //      getWord() - gibt ein  zufälliges wort zurück
     //          solte kein Treffer vorhanden sein, wird ein empty String zurückgegeben.
 
-    private  static String getWord(int minCharNumber, int maxCharNumber){
+    public   String getWord(int minCharNumber, int maxCharNumber){
         // wenn  wordsArray noch keine Elemente hat, muss es erst initialisiet werden
         if(wordsArray.length==0)   wordsArray=readFileContentToArray();
         ArrayList<String> filterWordsArray= new ArrayList<String>();
@@ -98,27 +91,31 @@ public class Hangwords {
         return ((filterWordsArray.size() > 0) ?  filterWordsArray.get(randomWordIndex) : "");
 
     }
-    private  static String getWord(int minCharNumber){
+    public   String getWord(int minCharNumber){
         return  getWord(minCharNumber,40);
     }
-    private  static String getWord(){
+    public   String getWord(){
         return getWord(1,40);
     }
 
-
-    //  ------------    MAIN    ----------------
-    public static void main(String[] args) {
-
-        wordsArray =  readFileContentToArray();
-        System.out.println("\n\rUsable words:");
-        for (String x: wordsArray) {
-            System.out.print(x+" ");
-        }
-        System.out.println("\r\nTotal usable words:"+wordsArray.length);
-        System.out.print("\r\nRandom words:");
-        for (int i = 0; i<50;i++)
-            System.out.print(getWord(4,10)+" ");
+    public String[] getWordsArray(){
+        return wordsArray;
     }
+
+
+//    //  ------------    MAIN    ----------------
+//    public static void main(String[] args) {
+//
+////        wordsArray =  readFileContentToArray();
+//        System.out.println("\n\rUsable words:");
+//        for (String x: wordsArray) {
+//            System.out.print(x+" ");
+//        }
+//        System.out.println("\r\nTotal usable words:"+wordsArray.length);
+//        System.out.print("\r\nRandom words:");
+//        for (int i = 0; i<50;i++)
+//            //System.out.print(getWord(4,10)+" ");
+//    }
 
 
 } //end class Hangwords
